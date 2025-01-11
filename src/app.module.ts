@@ -5,7 +5,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { CustomLoggerService } from "./custom-logger/custom-logger.service";
+import { CustomLoggerModule } from "./custom-logger/custom-logger.module";
 import { AllExceptionsFilter } from "./filters/all-exceptions.filter";
 import { PrismaModule } from "./prisma/prisma.module";
 
@@ -21,11 +21,12 @@ import { PrismaModule } from "./prisma/prisma.module";
         ConfigModule.forRoot({
             isGlobal: true,
         }),
+        CustomLoggerModule,
     ],
     controllers: [AppController],
     providers: [
         AppService,
-        CustomLoggerService,
+
         {
             provide: APP_FILTER,
             useClass: AllExceptionsFilter,
