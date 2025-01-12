@@ -116,15 +116,64 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     // Format exception for logging (to avoid '[object Object]' stringification)
     private formatExceptionForLogging(exception: string | object): string {
         if (typeof exception === "object") {
-            return JSON.stringify(exception, null, 2); // Pretty-print object errors
+            try {
+                return JSON.stringify(exception, null, 2); // Pretty-print object errors
+            } catch {
+                return "[Unserializable Object]"; // Fallback for non-serializable objects
+            }
         }
-        return exception.toString();
+
+        if (typeof exception === "string") {
+            return exception; // Directly return strings
+        }
+
+        // Fallback for unexpected types
+        return String(exception);
     }
 
     // Format Prisma error metadata
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private formatPrismaMeta(meta: any): string {
+
+    private formatPrismaMeta(meta: Record<string, unknown>): string {
         if (!meta) return "Unknown fields";
-        return Object.values(meta).join(", ");
+
+        return Object.values(meta)
+            .map((value) => {
+                // Check for null or undefined values
+                if (value === null || value === undefined) {
+                    return "";
+                }
+
+                // Handle primitives (string, number, etc.)
+                if (typeof value !== "object") {
+                    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+                    return String(value); // Safely convert primitive values to string
+                }
+
+                // Handle objects and arrays
+                try {
+                    return JSON.stringify(value, (key, val: unknown) => {
+                        // Handle circular references or non-serializable objects
+                        if (val instanceof Error) {
+                            return {
+                                message: val.message,
+                                name: val.name,
+                                stack: val.stack,
+                            };
+                        }
+
+                        // Safely handle arrays or objects (recursive call to formatPrismaMeta)
+                        if (Array.isArray(val)) {
+                            return val.map((item) =>
+                                this.formatPrismaMeta({ item }),
+                            );
+                        }
+
+                        return val; // Return object or other types as-is
+                    });
+                } catch {
+                    return "[Unserializable Object]";
+                }
+            })
+            .join(", ");
     }
 }
