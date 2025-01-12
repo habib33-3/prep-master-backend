@@ -5,6 +5,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { AuthGuard } from "./auth/auth.guard";
 import { AuthModule } from "./auth/auth.module";
 import { CustomLoggerModule } from "./custom-logger/custom-logger.module";
 import { AllExceptionsFilter } from "./filters/all-exceptions.filter";
@@ -30,6 +31,10 @@ import { UserModule } from "./user/user.module";
     controllers: [AppController],
     providers: [
         AppService,
+        {
+            provide: APP_GUARD,
+            useClass: AuthGuard,
+        },
 
         {
             provide: APP_FILTER,
