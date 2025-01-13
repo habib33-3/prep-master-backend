@@ -2,6 +2,7 @@ import { ValidationPipe } from "@nestjs/common";
 import { HttpAdapterHost, NestFactory } from "@nestjs/core";
 
 import { AppModule } from "./app.module";
+import { ResponseInterceptor } from "./common/interceptors/response.interceptors";
 import env from "./config/env.config";
 import { CustomLoggerService } from "./custom-logger/custom-logger.service";
 import { AllExceptionsFilter } from "./filters/all-exceptions.filter";
@@ -32,6 +33,8 @@ async function bootstrap() {
     // });
 
     app.setGlobalPrefix("api/v1");
+
+    app.useGlobalInterceptors(new ResponseInterceptor());
 
     const logger = app.get(CustomLoggerService);
 

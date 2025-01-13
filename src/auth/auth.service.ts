@@ -10,8 +10,8 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) {}
 
-    async createAccessToken(email: string): Promise<string> {
-        return this.prisma.$transaction(async (prisma) => {
+    async createAccessToken(email: string) {
+        const accessToken = await this.prisma.$transaction(async (prisma) => {
             // Find the user by email
             const user = await prisma.user.findUnique({
                 where: { email },
@@ -32,5 +32,9 @@ export class AuthService {
             // Return the signed token
             return token;
         });
+
+        return {
+            accessToken,
+        };
     }
 }
