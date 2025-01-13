@@ -12,7 +12,7 @@ import { AuthService } from "./auth.service";
             global: true,
             secret: env.JWT_SECRET,
             signOptions: {
-                expiresIn: env.JWT_EXPIRES_IN,
+                expiresIn: Number(env.JWT_EXPIRES_IN),
             },
         }),
     ],

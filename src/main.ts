@@ -26,11 +26,11 @@ async function bootstrap() {
     );
 
     // Enable CORS if needed, uncomment and configure
-    // app.enableCors({
-    //     origin: env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:3000"],
-    //     methods: "GET,POST,PUT,DELETE,PATCH",
-    //     credentials: true,
-    // });
+    app.enableCors({
+        origin: env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:3000"],
+        methods: "GET,POST,PUT,DELETE,PATCH",
+        credentials: true,
+    });
 
     app.setGlobalPrefix("api/v1");
 

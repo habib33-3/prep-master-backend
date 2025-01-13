@@ -11,30 +11,23 @@ export class AuthService {
     ) {}
 
     async createAccessToken(email: string) {
-        const accessToken = await this.prisma.$transaction(async (prisma) => {
-            // Find the user by email
+        const token = await this.prisma.$transaction(async (prisma) => {
             const user = await prisma.user.findUnique({
                 where: { email },
-                select: { id: true, email: true }, // Only select required fields
+                select: { id: true, email: true },
             });
 
-            // Throw a NotFoundException if the user doesn't exist
             if (!user) {
                 throw new NotFoundException("User not found");
             }
 
-            // Create the JWT payload
             const payload = { sub: user.id, email: user.email };
 
-            // Sign the JWT
-            const token = await this.jwtService.signAsync(payload);
-
-            // Return the signed token
-            return token;
+            return await this.jwtService.signAsync(payload);
         });
 
         return {
-            accessToken,
+            accessToken: token,
         };
     }
 }
