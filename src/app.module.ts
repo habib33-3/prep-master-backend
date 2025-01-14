@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { APP_FILTER, APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
@@ -7,7 +7,9 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthGuard } from "./auth/auth.guard";
 import { AuthModule } from "./auth/auth.module";
+import { RequestLoggingMiddleware } from "./common/middlewares/request-logger.middleware";
 import { CustomLoggerModule } from "./custom-logger/custom-logger.module";
+import { CustomLoggerService } from "./custom-logger/custom-logger.service";
 import { AllExceptionsFilter } from "./filters/all-exceptions.filter";
 import { PrismaModule } from "./prisma/prisma.module";
 import { UserModule } from "./user/user.module";
@@ -44,6 +46,17 @@ import { UserModule } from "./user/user.module";
             provide: APP_GUARD,
             useClass: ThrottlerGuard,
         },
+        {
+            provide: RequestLoggingMiddleware,
+            useFactory: (logger: CustomLoggerService) => {
+                return new RequestLoggingMiddleware(logger);
+            },
+            inject: [CustomLoggerService], // Inject CustomLoggerService here
+        },
     ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(RequestLoggingMiddleware).forRoutes("*");
+    }
+}

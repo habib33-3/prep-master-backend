@@ -23,7 +23,7 @@ export class AuthController {
     }
 
     @Public()
-    @Post("access-token")
+    @Post("/access-token")
     async createAccessToken(
         @Body("email") email: string,
         @Res({ passthrough: true }) res: Response,
@@ -40,7 +40,7 @@ export class AuthController {
     }
 
     @HttpCode(200)
-    @Post("/clear-cookie")
+    @Post("clear-cookie")
     clearAccessToken(@Res({ passthrough: true }) res: Response) {
         const cookieOptions = this.getCookieOptions();
         cookieOptions.maxAge = 0;

@@ -33,7 +33,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
 
         const myResponseObj: MyResponseObj = {
             statusCode: 500,
-            timestamp: new Date().toISOString(),
+            timestamp: this.formatDate(new Date()),
             path: request.url,
             response: "",
         };
@@ -175,5 +175,15 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
                 }
             })
             .join(", ");
+    }
+
+    // Format date in dd/mm/yy format
+    private formatDate(date: Date): string {
+        const formatter = new Intl.DateTimeFormat("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+        });
+        return formatter.format(date);
     }
 }
