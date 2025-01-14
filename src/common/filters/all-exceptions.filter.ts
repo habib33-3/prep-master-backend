@@ -15,6 +15,7 @@ import {
 import { Request, Response } from "express";
 
 type MyResponseObj = {
+    success: boolean;
     statusCode: number;
     timestamp: string;
     path: string;
@@ -32,6 +33,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         const request = ctx.getRequest<Request>();
 
         const myResponseObj: MyResponseObj = {
+            success: false,
             statusCode: 500,
             timestamp: this.formatDate(new Date()),
             path: request.url,
@@ -108,51 +110,42 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         super.catch(exception, host);
     }
 
-    // Optional: Generate a unique error ID for tracing errors
     private generateErrorId(): string {
         return "error_" + (Math.random() * 1e9).toString(36);
     }
 
-    // Format exception for logging (to avoid '[object Object]' stringification)
     private formatExceptionForLogging(exception: string | object): string {
         if (typeof exception === "object") {
             try {
-                return JSON.stringify(exception, null, 2); // Pretty-print object errors
+                return JSON.stringify(exception, null, 2);
             } catch {
-                return "[Unserializable Object]"; // Fallback for non-serializable objects
+                return "[Unserializable Object]";
             }
         }
 
         if (typeof exception === "string") {
-            return exception; // Directly return strings
+            return exception;
         }
 
-        // Fallback for unexpected types
         return String(exception);
     }
-
-    // Format Prisma error metadata
 
     private formatPrismaMeta(meta: Record<string, unknown>): string {
         if (!meta) return "Unknown fields";
 
         return Object.values(meta)
             .map((value) => {
-                // Check for null or undefined values
                 if (value === null || value === undefined) {
                     return "";
                 }
 
-                // Handle primitives (string, number, etc.)
                 if (typeof value !== "object") {
                     // eslint-disable-next-line @typescript-eslint/no-base-to-string
-                    return String(value); // Safely convert primitive values to string
+                    return String(value);
                 }
 
-                // Handle objects and arrays
                 try {
                     return JSON.stringify(value, (key, val: unknown) => {
-                        // Handle circular references or non-serializable objects
                         if (val instanceof Error) {
                             return {
                                 message: val.message,
@@ -161,14 +154,13 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
                             };
                         }
 
-                        // Safely handle arrays or objects (recursive call to formatPrismaMeta)
                         if (Array.isArray(val)) {
                             return val.map((item) =>
                                 this.formatPrismaMeta({ item }),
                             );
                         }
 
-                        return val; // Return object or other types as-is
+                        return val;
                     });
                 } catch {
                     return "[Unserializable Object]";
@@ -177,7 +169,6 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
             .join(", ");
     }
 
-    // Format date in dd/mm/yy format
     private formatDate(date: Date): string {
         const formatter = new Intl.DateTimeFormat("en-GB", {
             day: "2-digit",

@@ -8,67 +8,35 @@ import {
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
-import { SuccessResponse } from "../dto/response.dto";
+import { StandardResponse } from "../dto/response.dto";
 
 @Injectable()
-export class ResponseInterceptor<T>
-    implements NestInterceptor<T, SuccessResponse<T>>
-{
+export class ResponseInterceptor<T> implements NestInterceptor {
     intercept(
         context: ExecutionContext,
         next: CallHandler,
-    ): Observable<SuccessResponse<T>> {
+    ): Observable<StandardResponse<T>> {
         const httpContext = context.switchToHttp();
         const request = httpContext.getRequest<Request>();
         const response = httpContext.getResponse();
 
-        const timestamp = this.getFormattedTimestamp();
+        const timestamp = this.formatDate(new Date());
+        const path = request.url;
 
         return next.handle().pipe(
-            map((data) => {
-                // If the response data is already an object with a status code, like an error response, handle it
-                if (data?.statusCode && data?.message) {
-                    return new SuccessResponse<T>({
-                        status: response.statusCode,
-                        message: this.getMessageByStatus(
-                            response.statusCode as number,
-                        ),
-                        path: request.url,
-                        timestamp,
-                        data: data,
-                    });
-                }
-                return new SuccessResponse<T>({
-                    status: response.statusCode,
-                    message: this.getMessageByStatus(
-                        response.statusCode as number,
-                    ),
-                    path: request.url,
-                    timestamp,
-                    data,
-                });
-            }),
+            map((data) => ({
+                success: true,
+                statusCode: response.statusCode,
+                message: "Request successful",
+                timestamp,
+                path,
+                data,
+            })),
         );
     }
 
-    private getMessageByStatus(status: number): string {
-        const statusMessages: Record<number, string> = {
-            200: "Request successful",
-            201: "Resource created successfully",
-            204: "No content",
-        };
-        return statusMessages[status] || "Success";
-    }
-
-    private getFormattedTimestamp(): string {
-        const date = new Date();
-
-        // Calculate the time offset for the Asia/Dhaka timezone (GMT+6)
-        const localDate = new Date(
-            date.toLocaleString("en-US", { timeZone: "Asia/Dhaka" }),
-        );
-
-        const options: Intl.DateTimeFormatOptions = {
+    private formatDate(date: Date): string {
+        const formatter = new Intl.DateTimeFormat("en-GB", {
             day: "2-digit",
             month: "2-digit",
             year: "2-digit",
@@ -76,9 +44,7 @@ export class ResponseInterceptor<T>
             minute: "2-digit",
             second: "2-digit",
             hour12: false,
-        };
-
-        // Format the timestamp as dd/mm/yy hh:mm:ss
-        return localDate.toLocaleString("en-GB", options).replace(",", "");
+        });
+        return formatter.format(date).replace(",", "");
     }
 }
