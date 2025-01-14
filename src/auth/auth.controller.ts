@@ -1,10 +1,9 @@
 import { Body, Controller, HttpCode, Post, Res } from "@nestjs/common";
 
+import { ACCESS_TOKEN } from "src/common/constants/auth.constants";
 import { Public } from "src/common/decorators/public.decorator";
-import { ACCESS_TOKEN } from "src/constants/auth.constants";
 
 import { CookieOptions, Response } from "express";
-import { env } from "process";
 
 import { AuthService } from "./auth.service";
 
@@ -18,7 +17,7 @@ export class AuthController {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? "strict" : "lax",
-            maxAge: Number(env.JWT_EXPIRES_IN),
+            maxAge: 60 * 60 * 60 * 1000,
         };
     }
 
@@ -49,7 +48,8 @@ export class AuthController {
 
         return {
             status: "success",
-            message: "Access token cookie cleared successfully.",
+            message:
+                "Access token cookie cleared successfully. You are logged out.",
         };
     }
 }

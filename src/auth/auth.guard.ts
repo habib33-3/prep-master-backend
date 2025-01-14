@@ -7,8 +7,9 @@ import {
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 
+import env from "src/common/config/env.config";
+import { ACCESS_TOKEN } from "src/common/constants/auth.constants";
 import { IS_PUBLIC_KEY } from "src/common/decorators/public.decorator";
-import env from "src/config/env.config";
 
 import { Request } from "express";
 
@@ -28,28 +29,28 @@ export class AuthGuard implements CanActivate {
         if (isPublic) return true;
 
         const request = context.switchToHttp().getRequest();
+
         const token = this.extractTokenFromHeaders(request as Request);
 
         if (!token) {
-            throw new UnauthorizedException("Access Denied");
+            throw new UnauthorizedException(
+                "Access Denied: No token provided.",
+            );
         }
 
         try {
             const payload = await this.jwtService.verifyAsync(token, {
                 secret: env.JWT_SECRET,
             });
-
             request["user"] = payload;
         } catch {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("Access Denied: Invalid token.");
         }
 
         return true;
     }
 
     private extractTokenFromHeaders(request: Request) {
-        const [type, token] = request.headers.authorization?.split(" ") ?? [];
-
-        return type === "Bearer" ? token : undefined;
+        return request.cookies[ACCESS_TOKEN] as string;
     }
 }
