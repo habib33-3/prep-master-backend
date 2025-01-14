@@ -136,35 +136,26 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         return Object.values(meta)
             .map((value) => {
                 if (value === null || value === undefined) {
-                    return "";
+                    return ""; // Handle null or undefined explicitly
                 }
 
-                if (typeof value !== "object") {
-                    // eslint-disable-next-line @typescript-eslint/no-base-to-string
-                    return String(value);
+                if (typeof value === "object") {
+                    try {
+                        return JSON.stringify(value, null, 2); // Serialize objects
+                    } catch {
+                        return "[Unserializable Object]"; // Handle serialization errors
+                    }
                 }
 
-                try {
-                    return JSON.stringify(value, (key, val: unknown) => {
-                        if (val instanceof Error) {
-                            return {
-                                message: val.message,
-                                name: val.name,
-                                stack: val.stack,
-                            };
-                        }
-
-                        if (Array.isArray(val)) {
-                            return val.map((item) =>
-                                this.formatPrismaMeta({ item }),
-                            );
-                        }
-
-                        return val;
-                    });
-                } catch {
-                    return "[Unserializable Object]";
+                if (
+                    typeof value === "string" ||
+                    typeof value === "number" ||
+                    typeof value === "boolean"
+                ) {
+                    return String(value); // Safely convert primitive types to string
                 }
+
+                return "[Unknown Type]"; // Fallback for unexpected types
             })
             .join(", ");
     }
