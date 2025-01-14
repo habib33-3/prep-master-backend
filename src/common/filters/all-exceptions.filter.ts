@@ -40,74 +40,115 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
             response: "",
         };
 
-        // Handle known HTTP exceptions
+        // Handle the exception types and modify the response object
+        this.handleException(exception, myResponseObj);
+
+        // Send the response
+        response.status(myResponseObj.statusCode).json(myResponseObj);
+
+        // Log the error
+        this.logError(myResponseObj);
+
+        // Call the parent catch method for further processing
+        super.catch(exception, host);
+    }
+
+    private handleException(exception: unknown, myResponseObj: MyResponseObj) {
         if (exception instanceof HttpException) {
-            myResponseObj.statusCode = exception.getStatus();
-            const exceptionResponse = exception.getResponse();
-            myResponseObj.response =
-                typeof exceptionResponse === "string"
-                    ? exceptionResponse
-                    : JSON.stringify(exceptionResponse);
-        }
-        // Handle Prisma validation errors
-        else if (exception instanceof PrismaClientValidationError) {
-            myResponseObj.statusCode = 422;
-            myResponseObj.response = exception.message.replace(/\n/g, " ");
-        }
-        // Handle Prisma known request errors
-        else if (exception instanceof PrismaClientKnownRequestError) {
-            myResponseObj.statusCode = 400;
-
-            switch (exception.code) {
-                case "P2002":
-                    myResponseObj.response =
-                        "Unique constraint failed on the field(s): " +
-                        this.formatPrismaMeta(exception.meta);
-                    break;
-                case "P2003":
-                    myResponseObj.response =
-                        "Foreign key constraint failed on the field(s): " +
-                        this.formatPrismaMeta(exception.meta);
-                    break;
-                case "P2025":
-                    myResponseObj.response =
-                        "An operation failed because a required record was not found.";
-                    break;
-                default:
-                    myResponseObj.response = exception.message;
-                    break;
-            }
-        }
-        // Handle general errors
-        else {
-            myResponseObj.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-
-            // Adjust error response based on the environment
-            if (process.env.NODE_ENV === "production") {
-                myResponseObj.response = "Internal Server Error";
-            } else {
-                myResponseObj.response =
-                    exception instanceof Error
-                        ? `${exception.name}: ${exception.message}`
-                        : JSON.stringify(exception);
-            }
+            this.handleHttpException(exception, myResponseObj);
+        } else if (exception instanceof PrismaClientValidationError) {
+            this.handlePrismaValidationError(exception, myResponseObj);
+        } else if (exception instanceof PrismaClientKnownRequestError) {
+            this.handlePrismaKnownRequestError(exception, myResponseObj);
+        } else {
+            this.handleGenericError(exception, myResponseObj);
         }
 
-        // Optional: Add unique error ID for tracking
+        // Add errorId if statusCode is 500 or higher
         if (myResponseObj.statusCode >= 500) {
             myResponseObj.errorId = this.generateErrorId();
         }
+    }
 
-        response.status(myResponseObj.statusCode).json(myResponseObj);
+    private handleHttpException(
+        exception: HttpException,
+        myResponseObj: MyResponseObj,
+    ) {
+        myResponseObj.statusCode = exception.getStatus();
+        const exceptionResponse = exception.getResponse();
 
-        // Log error using CustomLoggerService
+        if (typeof exceptionResponse === "string") {
+            myResponseObj.response = exceptionResponse;
+        } else {
+            myResponseObj.response = JSON.stringify(exceptionResponse);
+        }
+    }
+
+    private handlePrismaValidationError(
+        exception: PrismaClientValidationError,
+        myResponseObj: MyResponseObj,
+    ) {
+        myResponseObj.statusCode = 422;
+        myResponseObj.response = exception.message.replace(/\n/g, " ");
+    }
+
+    private handlePrismaKnownRequestError(
+        exception: PrismaClientKnownRequestError,
+        myResponseObj: MyResponseObj,
+    ) {
+        myResponseObj.statusCode = 400;
+
+        switch (exception.code) {
+            case "P2002":
+                myResponseObj.response =
+                    "Unique constraint failed on the field(s): " +
+                    this.formatPrismaMeta(exception.meta);
+                break;
+            case "P2003":
+                myResponseObj.response =
+                    "Foreign key constraint failed on the field(s): " +
+                    this.formatPrismaMeta(exception.meta);
+                break;
+            case "P2025":
+                myResponseObj.response =
+                    "An operation failed because a required record was not found.";
+                break;
+            default:
+                myResponseObj.response = exception.message;
+                break;
+        }
+    }
+
+    private handleGenericError(
+        exception: unknown,
+        myResponseObj: MyResponseObj,
+    ) {
+        myResponseObj.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        if (process.env.NODE_ENV === "production") {
+            myResponseObj.response = "Internal Server Error";
+        } else {
+            myResponseObj.response =
+                exception instanceof Error
+                    ? `${exception.name}: ${exception.message}`
+                    : JSON.stringify(exception);
+        }
+    }
+
+    private logError(myResponseObj: MyResponseObj) {
         const responseString = this.formatExceptionForLogging(
             myResponseObj.response,
         );
-
         this.logger.error(responseString, AllExceptionsFilter.name);
+    }
 
-        super.catch(exception, host);
+    private formatDate(date: Date): string {
+        const formatter = new Intl.DateTimeFormat("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+        });
+        return formatter.format(date);
     }
 
     private generateErrorId(): string {
@@ -136,14 +177,14 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         return Object.values(meta)
             .map((value) => {
                 if (value === null || value === undefined) {
-                    return ""; // Handle null or undefined explicitly
+                    return "";
                 }
 
                 if (typeof value === "object") {
                     try {
-                        return JSON.stringify(value, null, 2); // Serialize objects
+                        return JSON.stringify(value, null, 2);
                     } catch {
-                        return "[Unserializable Object]"; // Handle serialization errors
+                        return "[Unserializable Object]";
                     }
                 }
 
@@ -152,20 +193,11 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
                     typeof value === "number" ||
                     typeof value === "boolean"
                 ) {
-                    return String(value); // Safely convert primitive types to string
+                    return String(value);
                 }
 
-                return "[Unknown Type]"; // Fallback for unexpected types
+                return "[Unknown Type]";
             })
             .join(", ");
-    }
-
-    private formatDate(date: Date): string {
-        const formatter = new Intl.DateTimeFormat("en-GB", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "2-digit",
-        });
-        return formatter.format(date);
     }
 }

@@ -8,14 +8,14 @@ import {
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
-import { StandardResponse } from "../dto/response.dto";
+import { StandardResponseDto } from "../dto/response.dto";
 
 @Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor {
     intercept(
         context: ExecutionContext,
         next: CallHandler,
-    ): Observable<StandardResponse<T>> {
+    ): Observable<StandardResponseDto<T>> {
         const httpContext = context.switchToHttp();
         const request = httpContext.getRequest<Request>();
         const response = httpContext.getResponse();
