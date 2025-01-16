@@ -11,6 +11,7 @@ import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
 import { RequestLoggingMiddleware } from "./common/middlewares/request-logger.middleware";
 import { CustomLoggerModule } from "./custom-logger/custom-logger.module";
 import { CustomLoggerService } from "./custom-logger/custom-logger.service";
+import { ExerciseModule } from "./exercise/exercise.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { UserModule } from "./user/user.module";
 
@@ -29,6 +30,7 @@ import { UserModule } from "./user/user.module";
         CustomLoggerModule,
         AuthModule,
         UserModule,
+        ExerciseModule,
     ],
     controllers: [AppController],
     providers: [

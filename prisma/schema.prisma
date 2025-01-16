@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Level {
+  EASY
+  MEDIUM
+  HARD
+}
+
 model User {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   name  String
@@ -15,5 +21,24 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  Exercises Exercise[]
+
   @@map("users")
+}
+
+model Exercise {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  answer     String
+  level      Level    @default(EASY)
+  topic      String
+  categories String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  creatorEmail String
+  creator      User   @relation(fields: [creatorEmail], references: [email])
+
+  @@map("exercises")
 }

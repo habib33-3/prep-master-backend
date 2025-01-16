@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
 import { CustomLoggerService } from "src/custom-logger/custom-logger.service";
 import { PrismaService } from "src/prisma/prisma.service";
@@ -18,7 +18,8 @@ export class UserService {
         const existingUser = await this.findUserByEmail(email);
 
         if (existingUser) {
-            throw new ConflictException("User Already Exists");
+            this.logService.log(`User with email ${email} already exists.`);
+            return existingUser;
         }
 
         return await this.prisma.user.create({
