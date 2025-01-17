@@ -6,7 +6,11 @@ import {
     Param,
     Post,
     Put,
+    Query,
 } from "@nestjs/common";
+
+import { Public } from "src/common/decorators/public.decorator";
+import { PaginationQueryDto } from "src/util/pagination/dto/pagination.dto";
 
 import { CreateExerciseDto, UpdateExerciseDto } from "./dto/exercise.dto";
 import { ExerciseService } from "./exercise.service";
@@ -20,11 +24,13 @@ export class ExerciseController {
         return await this.exerciseService.create(createExerciseDto);
     }
 
+    @Public()
     @Get()
-    async findAll() {
-        return await this.exerciseService.findAll();
+    async findAll(@Query() paginationQuery: PaginationQueryDto) {
+        return await this.exerciseService.findAll(paginationQuery);
     }
 
+    @Public()
     @Get(":id")
     async findById(@Param("id") id: string) {
         return await this.exerciseService.findById(id);

@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { CustomLoggerService } from "src/custom-logger/custom-logger.service";
 import { PrismaService } from "src/prisma/prisma.service";
+import { PaginationQueryDto } from "src/util/pagination/dto/pagination.dto";
 
 import { CreateExerciseDto, UpdateExerciseDto } from "./dto/exercise.dto";
 
@@ -23,13 +24,23 @@ export class ExerciseService {
         return result;
     }
 
-    async findAll() {
-        const result = await this.prisma.exercise.findMany();
+    async findAll(paginationQuery: PaginationQueryDto) {
+        const { page = 1, pageSize = 10 } = paginationQuery;
+
+        const skip = (page - 1) * pageSize;
+        const take = pageSize;
+
+        const [data, total] = await this.prisma.$transaction([
+            this.prisma.exercise.findMany({ skip, take }),
+            this.prisma.exercise.count(),
+        ]);
+
         this.logService.log(
             "Fetched exercises",
-            JSON.stringify({ count: result.length }),
+            JSON.stringify({ count: data.length, page, pageSize, total }),
         );
-        return result;
+
+        return { data, total, page, pageSize };
     }
 
     async findById(id: string) {

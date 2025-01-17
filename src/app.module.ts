@@ -14,6 +14,7 @@ import { CustomLoggerService } from "./custom-logger/custom-logger.service";
 import { ExerciseModule } from "./exercise/exercise.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { UserModule } from "./user/user.module";
+import { PaginationModule } from "./util/pagination/pagination.module";
 
 @Module({
     imports: [
@@ -31,6 +32,7 @@ import { UserModule } from "./user/user.module";
         AuthModule,
         UserModule,
         ExerciseModule,
+        PaginationModule,
     ],
     controllers: [AppController],
     providers: [
