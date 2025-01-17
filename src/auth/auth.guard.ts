@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 import {
     CanActivate,
     ExecutionContext,
@@ -10,7 +12,6 @@ import { JwtService } from "@nestjs/jwt";
 import env from "@/common/config/env.config";
 import { ACCESS_TOKEN } from "@/common/constants/auth.constants";
 import { IS_PUBLIC_KEY } from "@/common/decorators/public.decorator";
-import { Request } from "express";
 
 @Injectable()
 export class AuthGuard implements CanActivate {

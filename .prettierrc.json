@@ -9,10 +9,13 @@
   "importOrder": [
     "^node:(.*)$",
     "^(fs|path|os)(.*)$",
+    "^express$",
     "^@nestjs/(.*)$",
     "^nestjs/(.*)$",
-    "^src/(.*)$",
     "<THIRD_PARTY_MODULES>",
+    "^@/(.*)$",
+    "^src/(.*)$",
+
     "^[./]"
   ],
   "importOrderSeparation": true,
