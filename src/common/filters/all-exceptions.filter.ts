@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
 
-import { CustomLoggerService } from "src/custom-logger/custom-logger.service";
+import { CustomLoggerService } from "src/util/custom-logger/custom-logger.service";
 
 import {
     PrismaClientKnownRequestError,

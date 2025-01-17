@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
-import { CustomLoggerService } from "src/custom-logger/custom-logger.service";
-import { PrismaService } from "src/prisma/prisma.service";
+import { CustomLoggerService } from "src/util/custom-logger/custom-logger.service";
+import { PrismaService } from "src/util/prisma/prisma.service";
 
 import { SaveUserDto } from "./dto/user.dto";
 

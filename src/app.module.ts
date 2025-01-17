@@ -9,12 +9,12 @@ import { AuthGuard } from "./auth/auth.guard";
 import { AuthModule } from "./auth/auth.module";
 import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
 import { RequestLoggingMiddleware } from "./common/middlewares/request-logger.middleware";
-import { CustomLoggerModule } from "./custom-logger/custom-logger.module";
-import { CustomLoggerService } from "./custom-logger/custom-logger.service";
 import { ExerciseModule } from "./exercise/exercise.module";
-import { PrismaModule } from "./prisma/prisma.module";
 import { UserModule } from "./user/user.module";
+import { CustomLoggerModule } from "./util/custom-logger/custom-logger.module";
+import { CustomLoggerService } from "./util/custom-logger/custom-logger.service";
 import { PaginationModule } from "./util/pagination/pagination.module";
+import { PrismaModule } from "./util/prisma/prisma.module";
 
 @Module({
     imports: [

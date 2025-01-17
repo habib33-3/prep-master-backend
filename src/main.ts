@@ -8,7 +8,7 @@ import { AppModule } from "./app.module";
 import env from "./common/config/env.config";
 import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
 import { ResponseInterceptor } from "./common/interceptors/response.interceptors";
-import { CustomLoggerService } from "./custom-logger/custom-logger.service";
+import { CustomLoggerService } from "./util/custom-logger/custom-logger.service";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
