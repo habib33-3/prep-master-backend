@@ -6,9 +6,9 @@ import * as cookieParser from "cookie-parser";
 
 import { AppModule } from "./app.module";
 import env from "./common/config/env.config";
+import { CustomLoggerService } from "./common/custom-logger/custom-logger.service";
 import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
 import { ResponseInterceptor } from "./common/interceptors/response.interceptors";
-import { CustomLoggerService } from "./util/custom-logger/custom-logger.service";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);

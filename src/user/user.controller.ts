@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from "@nestjs/common";
 
-import { Public } from "src/common/decorators/public.decorator";
+import { Public } from "@/common/decorators/public.decorator";
 
 import { SaveUserDto } from "./dto/user.dto";
 import { UserService } from "./user.service";

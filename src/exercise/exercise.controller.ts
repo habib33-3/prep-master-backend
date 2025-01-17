@@ -9,8 +9,8 @@ import {
     Query,
 } from "@nestjs/common";
 
-import { Public } from "src/common/decorators/public.decorator";
-import { PaginationQueryDto } from "src/util/pagination/dto/pagination.dto";
+import { Public } from "@/common/decorators/public.decorator";
+import { PaginationQueryDto } from "@/common/pagination/dto/pagination.dto";
 
 import { CreateExerciseDto, UpdateExerciseDto } from "./dto/exercise.dto";
 import { ExerciseService } from "./exercise.service";

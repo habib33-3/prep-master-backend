@@ -1,8 +1,7 @@
 import { Body, Controller, HttpCode, Post, Res } from "@nestjs/common";
 
-import { ACCESS_TOKEN } from "src/common/constants/auth.constants";
-import { Public } from "src/common/decorators/public.decorator";
-
+import { ACCESS_TOKEN } from "@/common/constants/auth.constants";
+import { Public } from "@/common/decorators/public.decorator";
 import { CookieOptions, Response } from "express";
 
 import { AuthService } from "./auth.service";

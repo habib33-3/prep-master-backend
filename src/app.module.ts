@@ -7,14 +7,14 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthGuard } from "./auth/auth.guard";
 import { AuthModule } from "./auth/auth.module";
+import { CustomLoggerModule } from "./common/custom-logger/custom-logger.module";
+import { CustomLoggerService } from "./common/custom-logger/custom-logger.service";
 import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
 import { RequestLoggingMiddleware } from "./common/middlewares/request-logger.middleware";
+import { PaginationModule } from "./common/pagination/pagination.module";
+import { PrismaModule } from "./common/prisma/prisma.module";
 import { ExerciseModule } from "./exercise/exercise.module";
 import { UserModule } from "./user/user.module";
-import { CustomLoggerModule } from "./util/custom-logger/custom-logger.module";
-import { CustomLoggerService } from "./util/custom-logger/custom-logger.service";
-import { PaginationModule } from "./util/pagination/pagination.module";
-import { PrismaModule } from "./util/prisma/prisma.module";
 
 @Module({
     imports: [
