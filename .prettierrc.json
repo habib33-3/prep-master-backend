@@ -8,16 +8,27 @@
   "arrowParens": "always",
   "importOrder": [
     "^node:(.*)$",
-    "^(fs|path|os)(.*)$",
+    "^(fs|path|os|util|crypto)(.*)$",
+    "<THIRD_PARTY_MODULES>",
     "^express$",
     "^@nestjs/(.*)$",
     "^nestjs/(.*)$",
-    "<THIRD_PARTY_MODULES>",
+    "@/common/(.*)$",
+    "@/config/(.*)$",
+    "@/constants/(.*)$",
+    "@/decorators/(.*)$",
+    "@/exceptions/(.*)$",
+    "@/filters/(.*)$",
+    "@/interceptors/(.*)$",
+    "@/middlewares/(.*)$",
+    "@/utils/(.*)$",
+    "@/dto/(.*)$",
+    "@/shared/(.*)$",
     "^@/(.*)$",
     "^src/(.*)$",
-
     "^[./]"
   ],
+
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
   "plugins": [

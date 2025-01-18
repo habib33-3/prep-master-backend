@@ -1,20 +1,24 @@
+import * as cookieParser from "cookie-parser";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ValidationPipe } from "@nestjs/common";
 import { HttpAdapterHost, NestFactory } from "@nestjs/core";
 
-import * as cookieParser from "cookie-parser";
+import env from "@/config/env.config";
+
+import { AllExceptionsFilter } from "@/filters/all-exceptions.filter";
+
+import { ResponseInterceptor } from "@/interceptors/response.interceptors";
+
+import { CustomLoggerService } from "@/shared/custom-logger/custom-logger.service";
 
 import { AppModule } from "./app.module";
-import env from "./common/config/env.config";
-import { CustomLoggerService } from "./common/custom-logger/custom-logger.service";
-import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
-import { ResponseInterceptor } from "./common/interceptors/response.interceptors";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     app.enableCors({
-        origin: env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:3000"],
+        origin: env.ALLOWED_ORIGINS || ["http://localhost:3000"],
         methods: "GET,POST,PUT,DELETE,PATCH",
         credentials: true,
     });

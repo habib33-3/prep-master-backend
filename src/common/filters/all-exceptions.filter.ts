@@ -1,3 +1,8 @@
+import {
+    PrismaClientKnownRequestError,
+    PrismaClientValidationError,
+} from "@prisma/client/runtime/library";
+
 import { Request, Response } from "express";
 
 import {
@@ -8,12 +13,7 @@ import {
 } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
 
-import {
-    PrismaClientKnownRequestError,
-    PrismaClientValidationError,
-} from "@prisma/client/runtime/library";
-
-import { CustomLoggerService } from "@/common/custom-logger/custom-logger.service";
+import { CustomLoggerService } from "../shared/custom-logger/custom-logger.service";
 
 type MyResponseObj = {
     success: boolean;

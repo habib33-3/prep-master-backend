@@ -1,7 +1,7 @@
 import { Injectable, OnApplicationShutdown } from "@nestjs/common";
 
-import { CustomLoggerService } from "./common/custom-logger/custom-logger.service";
-import { PrismaService } from "./common/prisma/prisma.service";
+import { CustomLoggerService } from "@/shared/custom-logger/custom-logger.service";
+import { PrismaService } from "@/shared/prisma/prisma.service";
 
 @Injectable()
 export class AppService implements OnApplicationShutdown {

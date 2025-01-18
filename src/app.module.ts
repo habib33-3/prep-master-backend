@@ -3,16 +3,19 @@ import { ConfigModule } from "@nestjs/config";
 import { APP_FILTER, APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 
+import { AllExceptionsFilter } from "@/filters/all-exceptions.filter";
+
+import { RequestLoggingMiddleware } from "@/middlewares/request-logger.middleware";
+
+import { CustomLoggerModule } from "@/shared/custom-logger/custom-logger.module";
+import { CustomLoggerService } from "@/shared/custom-logger/custom-logger.service";
+import { PaginationModule } from "@/shared/pagination/pagination.module";
+import { PrismaModule } from "@/shared/prisma/prisma.module";
+
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthGuard } from "./auth/auth.guard";
 import { AuthModule } from "./auth/auth.module";
-import { CustomLoggerModule } from "./common/custom-logger/custom-logger.module";
-import { CustomLoggerService } from "./common/custom-logger/custom-logger.service";
-import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
-import { RequestLoggingMiddleware } from "./common/middlewares/request-logger.middleware";
-import { PaginationModule } from "./common/pagination/pagination.module";
-import { PrismaModule } from "./common/prisma/prisma.module";
 import { ExerciseModule } from "./exercise/exercise.module";
 import { UserModule } from "./user/user.module";
 

@@ -1,10 +1,10 @@
+import { performance } from "perf_hooks";
+
 import { NextFunction, Request, Response } from "express";
 
 import { Injectable, NestMiddleware } from "@nestjs/common";
 
-import { performance } from "perf_hooks";
-
-import { CustomLoggerService } from "@/common/custom-logger/custom-logger.service";
+import { CustomLoggerService } from "../shared/custom-logger/custom-logger.service";
 
 @Injectable()
 export class RequestLoggingMiddleware implements NestMiddleware {

@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 
-import { CustomLoggerService } from "@/common/custom-logger/custom-logger.service";
-import { PaginationQueryDto } from "@/common/pagination/dto/pagination.dto";
-import { PrismaService } from "@/common/prisma/prisma.service";
+import { CustomLoggerService } from "@/shared/custom-logger/custom-logger.service";
+import { PaginationQueryDto } from "@/shared/pagination/dto/pagination.dto";
+import { PrismaService } from "@/shared/prisma/prisma.service";
 
 import { CreateExerciseDto, UpdateExerciseDto } from "./dto/exercise.dto";
 

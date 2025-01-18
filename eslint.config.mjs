@@ -28,7 +28,7 @@ export default [
             node: true,
             jest: true,
         },
-        ignorePatterns: [".eslintrc.js", "dist/**", "node_modules/**"],
+        ignorePatterns: [".eslintrc.js", "dist/**", "node_modules/**","**/*.spec.ts"],
         rules: {
             // NestJS-specific improvements
             "@typescript-eslint/interface-name-prefix": "off", // Deprecated, unnecessary

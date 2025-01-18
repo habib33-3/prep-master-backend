@@ -11,7 +11,16 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/config/*": ["src/common/config/*"],
+      "@/constants/*": ["src/common/constants/*"],
+      "@/decorators/*": ["src/common/decorators/*"],
+      "@/dto/*": ["src/common/dto/*"],
+      "@/filters/*": ["src/common/filters/*"],
+      "@/interceptors/*": ["src/common/interceptors/*"],
+      "@/middlewares/*": ["src/common/middlewares/*"],
+      "@/shared/*": ["src/common/shared/*"],
+      "@/utils/*": ["src/common/util/*"],
+      "@/*": ["src/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
@@ -20,5 +29,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+"include": ["src/**/*", "test/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

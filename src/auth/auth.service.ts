@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
-import { PrismaService } from "@/common/prisma/prisma.service";
+import { PrismaService } from "@/shared/prisma/prisma.service";
 
 @Injectable()
 export class AuthService {
