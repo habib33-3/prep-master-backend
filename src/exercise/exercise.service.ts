@@ -27,15 +27,12 @@ export class ExerciseService {
         return result;
     }
 
-    async findAll(
-        filters: ExerciseFilterQueryDto, // Model-specific filters
-    ) {
-        const { page = 1, pageSize = 10, sortBy, sortOrder } = filters;
+    async findAll(filters: ExerciseFilterQueryDto) {
+        const { page = 1, pageSize = 10, sortBy, sortOrder, search } = filters;
         const skip = (page - 1) * pageSize;
         const take = pageSize;
 
         // Build dynamic `where` filter based on model-specific filters
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const where: any = {};
 
         if (filters) {
@@ -44,6 +41,14 @@ export class ExerciseService {
                 where.topic = { contains: filters.topic, mode: "insensitive" };
             if (filters.categories)
                 where.categories = { hasSome: filters.categories };
+            if (search) {
+                // Match `search` query across multiple fields
+                where.OR = [
+                    { title: { contains: search, mode: "insensitive" } },
+                    { answer: { contains: search, mode: "insensitive" } },
+                    { topic: { contains: search, mode: "insensitive" } },
+                ];
+            }
         }
 
         const orderBy = sortBy
