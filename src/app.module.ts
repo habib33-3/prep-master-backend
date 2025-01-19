@@ -9,13 +9,13 @@ import { RequestLoggingMiddleware } from "@/middlewares/request-logger.middlewar
 
 import { CustomLoggerModule } from "@/shared/custom-logger/custom-logger.module";
 import { CustomLoggerService } from "@/shared/custom-logger/custom-logger.service";
-import { PaginationModule } from "@/shared/pagination/pagination.module";
 import { PrismaModule } from "@/shared/prisma/prisma.module";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthGuard } from "./auth/auth.guard";
 import { AuthModule } from "./auth/auth.module";
+import { QueryBuilderModule } from "./common/shared/query-builder/query-builder.module";
 import { ExerciseModule } from "./exercise/exercise.module";
 import { UserModule } from "./user/user.module";
 
@@ -35,7 +35,8 @@ import { UserModule } from "./user/user.module";
         AuthModule,
         UserModule,
         ExerciseModule,
-        PaginationModule,
+
+        QueryBuilderModule,
     ],
     controllers: [AppController],
     providers: [

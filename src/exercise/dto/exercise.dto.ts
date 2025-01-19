@@ -2,7 +2,7 @@ import { $Enums, Exercise } from "@prisma/client";
 import { Transform } from "class-transformer";
 import { IsArray, IsEnum, IsOptional, IsString } from "class-validator";
 
-import { PaginationQueryDto } from "@/shared/pagination/dto/pagination.dto";
+import { PaginationQueryDto } from "@/shared/query-builder/dto/pagination.dto";
 
 export class CreateExerciseDto implements Partial<Exercise> {
     @IsString()

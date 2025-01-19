@@ -3,8 +3,8 @@ import { Prisma } from "@prisma/client";
 import { Injectable } from "@nestjs/common";
 
 import { CustomLoggerService } from "@/shared/custom-logger/custom-logger.service";
-import { PaginationService } from "@/shared/pagination/pagination.service";
 import { PrismaService } from "@/shared/prisma/prisma.service";
+import { QueryBuilderService } from "@/shared/query-builder/query-builder.service";
 
 import {
     CreateExerciseDto,
@@ -18,7 +18,7 @@ export class ExerciseService {
     constructor(
         private readonly logService: CustomLoggerService,
         private readonly prisma: PrismaService,
-        private readonly paginationService: PaginationService,
+        private readonly queryBuilder: QueryBuilderService,
     ) {}
 
     async create(createExerciseDto: CreateExerciseDto) {
@@ -33,15 +33,14 @@ export class ExerciseService {
     }
 
     async findAll(filters: ExerciseFilterQueryDto) {
-        const { skip, take } =
-            this.paginationService.buildPaginationQuery(filters);
-        const orderBy = this.paginationService.buildSortingQuery(filters);
-        const searchQuery = this.paginationService.buildSearchQuery(
+        const { skip, take } = this.queryBuilder.buildPaginationQuery(filters);
+        const orderBy = this.queryBuilder.buildSortingQuery(filters);
+        const searchQuery = this.queryBuilder.buildSearchQuery(
             filters.search,
             searchableExerciseFields,
         );
 
-        const filterQuery = this.paginationService.buildFilterQuery({
+        const filterQuery = this.queryBuilder.buildFilterQuery({
             level: filters.level,
             topic: filters.topic,
             categories: filters.categories,

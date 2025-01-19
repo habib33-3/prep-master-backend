@@ -1,4 +1,7 @@
-export class PaginationService {
+import { Injectable } from "@nestjs/common";
+
+@Injectable()
+export class QueryBuilderService {
     buildPaginationQuery(filters: { page?: number; pageSize?: number }): {
         skip: number;
         take: number;
