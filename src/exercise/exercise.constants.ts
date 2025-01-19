@@ -1,1 +1,1 @@
-export const filterableExerciseFields = ["level", "topic", "categories"];
+export const searchableExerciseFields = ["title", "answer", "topic"];

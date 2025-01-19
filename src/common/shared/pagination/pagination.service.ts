@@ -1,5 +1,3 @@
-import { Prisma } from "@prisma/client";
-
 export class PaginationService {
     buildPaginationQuery(filters: { page?: number; pageSize?: number }): {
         skip: number;
@@ -11,30 +9,28 @@ export class PaginationService {
         return { skip, take: pageSize };
     }
 
-    buildSortingQuery(filters: {
-        sortBy?: string;
+    buildSortingQuery<T>(filters: {
+        sortBy?: keyof T;
         sortOrder?: "asc" | "desc";
-    }): Prisma.Enumerable<Prisma.ExerciseOrderByWithRelationInput> {
+    }): Array<Record<string, "asc" | "desc">> {
         const { sortBy = "createdAt", sortOrder = "asc" } = filters;
-        return [
-            { [sortBy]: sortOrder } as Prisma.ExerciseOrderByWithRelationInput,
-        ];
+        return [{ [sortBy as string]: sortOrder }];
     }
 
     buildSearchQuery<T>(
         search: string | undefined,
         searchableFields: Array<keyof T>,
-    ): Prisma.ExerciseWhereInput[] | undefined {
+    ): Array<Record<string, unknown>> | undefined {
         if (!search) return undefined;
         return searchableFields.map((field) => ({
-            [field]: { contains: search, mode: "insensitive" },
+            [field as string]: { contains: search, mode: "insensitive" },
         }));
     }
 
-    buildFilterQuery(
-        filters: Record<string, unknown>,
-    ): Prisma.Enumerable<Prisma.ExerciseWhereInput> {
-        const where: Prisma.ExerciseWhereInput = {};
+    buildFilterQuery<T extends Record<string, unknown>>(
+        filters: Partial<T>,
+    ): Record<string, unknown> {
+        const where: Record<string, unknown> = {};
         Object.entries(filters).forEach(([key, value]) => {
             if (value) {
                 if (Array.isArray(value)) {

@@ -11,6 +11,7 @@ import {
     ExerciseFilterQueryDto,
     UpdateExerciseDto,
 } from "./dto/exercise.dto";
+import { searchableExerciseFields } from "./exercise.constants";
 
 @Injectable()
 export class ExerciseService {
@@ -37,8 +38,9 @@ export class ExerciseService {
         const orderBy = this.paginationService.buildSortingQuery(filters);
         const searchQuery = this.paginationService.buildSearchQuery(
             filters.search,
-            ["title", "answer", "topic"],
+            searchableExerciseFields,
         );
+
         const filterQuery = this.paginationService.buildFilterQuery({
             level: filters.level,
             topic: filters.topic,
