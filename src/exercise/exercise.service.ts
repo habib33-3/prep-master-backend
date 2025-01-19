@@ -1,10 +1,13 @@
 import { Injectable } from "@nestjs/common";
 
 import { CustomLoggerService } from "@/shared/custom-logger/custom-logger.service";
-import { PaginationQueryDto } from "@/shared/pagination/dto/pagination.dto";
 import { PrismaService } from "@/shared/prisma/prisma.service";
 
-import { CreateExerciseDto, UpdateExerciseDto } from "./dto/exercise.dto";
+import {
+    CreateExerciseDto,
+    ExerciseFilterQueryDto,
+    UpdateExerciseDto,
+} from "./dto/exercise.dto";
 
 @Injectable()
 export class ExerciseService {
@@ -24,21 +27,39 @@ export class ExerciseService {
         return result;
     }
 
-    async findAll(paginationQuery: PaginationQueryDto) {
-        const { page = 1, pageSize = 10 } = paginationQuery;
-
+    async findAll(
+        filters: ExerciseFilterQueryDto, // Model-specific filters
+    ) {
+        const { page = 1, pageSize = 10, sortBy, sortOrder } = filters;
         const skip = (page - 1) * pageSize;
         const take = pageSize;
 
-        const [data, total] = await this.prisma.$transaction([
-            this.prisma.exercise.findMany({ skip, take }),
-            this.prisma.exercise.count(),
-        ]);
+        // Build dynamic `where` filter based on model-specific filters
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const where: any = {};
 
-        this.logService.log(
-            "Fetched exercises",
-            JSON.stringify({ count: data.length, page, pageSize, total }),
-        );
+        if (filters) {
+            if (filters.level) where.level = filters.level;
+            if (filters.topic)
+                where.topic = { contains: filters.topic, mode: "insensitive" };
+            if (filters.categories)
+                where.categories = { hasSome: filters.categories };
+        }
+
+        const orderBy = sortBy
+            ? { [sortBy]: sortOrder }
+            : { createdAt: sortOrder };
+
+        // Query the database
+        const [data, total] = await this.prisma.$transaction([
+            this.prisma.exercise.findMany({
+                where,
+                skip,
+                take,
+                orderBy,
+            }),
+            this.prisma.exercise.count({ where }),
+        ]);
 
         return { data, total, page, pageSize };
     }

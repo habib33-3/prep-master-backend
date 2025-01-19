@@ -55,6 +55,7 @@ export default [
                     argsIgnorePattern: "^_",
                     varsIgnorePattern: "^_",
                     ignoreRestSiblings: true,
+                    caughtErrorsIgnorePattern: "^_",
                 },
             ],
             "prettier/prettier": "off",

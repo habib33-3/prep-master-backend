@@ -9,10 +9,13 @@ import {
     Query,
 } from "@nestjs/common";
 
-import { Public } from "@/common/decorators/public.decorator";
-import { PaginationQueryDto } from "@/common/shared/pagination/dto/pagination.dto";
+import { Public } from "@/decorators/public.decorator";
 
-import { CreateExerciseDto, UpdateExerciseDto } from "./dto/exercise.dto";
+import {
+    CreateExerciseDto,
+    ExerciseFilterQueryDto,
+    UpdateExerciseDto,
+} from "./dto/exercise.dto";
 import { ExerciseService } from "./exercise.service";
 
 @Controller("exercise")
@@ -26,8 +29,10 @@ export class ExerciseController {
 
     @Public()
     @Get()
-    async findAll(@Query() paginationQuery: PaginationQueryDto) {
-        return await this.exerciseService.findAll(paginationQuery);
+    async findAll(
+        @Query() filters: ExerciseFilterQueryDto, // Example: filters for Exercise model
+    ) {
+        return await this.exerciseService.findAll(filters);
     }
 
     @Public()

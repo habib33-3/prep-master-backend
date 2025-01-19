@@ -1,5 +1,8 @@
 import { $Enums, Exercise } from "@prisma/client";
+import { Transform } from "class-transformer";
 import { IsArray, IsEnum, IsOptional, IsString } from "class-validator";
+
+import { PaginationQueryDto } from "@/shared/pagination/dto/pagination.dto";
 
 export class CreateExerciseDto implements Partial<Exercise> {
     @IsString()
@@ -45,4 +48,19 @@ export class UpdateExerciseDto implements Partial<CreateExerciseDto> {
     @IsOptional()
     @IsEnum($Enums.Level)
     level?: $Enums.Level;
+}
+
+export class ExerciseFilterQueryDto extends PaginationQueryDto {
+    @IsOptional()
+    @Transform(({ value }) => value?.toUpperCase()) // Convert to uppercase
+    @IsEnum($Enums.Level)
+    level?: $Enums.Level;
+
+    @IsOptional()
+    @IsString()
+    topic?: string;
+
+    @IsOptional()
+    @IsString()
+    categories?: string;
 }
