@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { Injectable } from "@nestjs/common";
 
 import { CustomLoggerService } from "@/shared/custom-logger/custom-logger.service";
+import { PaginationService } from "@/shared/pagination/pagination.service";
 import { PrismaService } from "@/shared/prisma/prisma.service";
 
 import {
@@ -16,6 +17,7 @@ export class ExerciseService {
     constructor(
         private readonly logService: CustomLoggerService,
         private readonly prisma: PrismaService,
+        private readonly paginationService: PaginationService,
     ) {}
 
     async create(createExerciseDto: CreateExerciseDto) {
@@ -30,45 +32,30 @@ export class ExerciseService {
     }
 
     async findAll(filters: ExerciseFilterQueryDto) {
-        const { page = 1, pageSize = 10, sortBy, sortOrder, search } = filters;
-        const skip = (page - 1) * pageSize;
-        const take = pageSize;
+        const { skip, take } =
+            this.paginationService.buildPaginationQuery(filters);
+        const orderBy = this.paginationService.buildSortingQuery(filters);
+        const searchQuery = this.paginationService.buildSearchQuery(
+            filters.search,
+            ["title", "answer", "topic"],
+        );
+        const filterQuery = this.paginationService.buildFilterQuery({
+            level: filters.level,
+            topic: filters.topic,
+            categories: filters.categories,
+        });
 
-        // Build dynamic `where` filter based on model-specific filters
-        const where: Prisma.ExerciseWhereInput = {};
+        const where: Prisma.ExerciseWhereInput = {
+            ...filterQuery,
+            ...(searchQuery ? { OR: searchQuery } : {}),
+        };
 
-        if (filters) {
-            if (filters.level) where.level = filters.level;
-            if (filters.topic)
-                where.topic = { contains: filters.topic, mode: "insensitive" };
-            if (filters.categories)
-                where.categories = { hasSome: filters.categories };
-            if (search) {
-                // Match `search` query across multiple fields
-                where.OR = [
-                    { title: { contains: search, mode: "insensitive" } },
-                    { answer: { contains: search, mode: "insensitive" } },
-                    { topic: { contains: search, mode: "insensitive" } },
-                ];
-            }
-        }
-
-        const orderBy = sortBy
-            ? { [sortBy]: sortOrder }
-            : { createdAt: sortOrder };
-
-        // Query the database
         const [data, total] = await this.prisma.$transaction([
-            this.prisma.exercise.findMany({
-                where,
-                skip,
-                take,
-                orderBy,
-            }),
+            this.prisma.exercise.findMany({ where, skip, take, orderBy }),
             this.prisma.exercise.count({ where }),
         ]);
 
-        return { data, total, page, pageSize };
+        return { data, total, page: filters.page, pageSize: filters.pageSize };
     }
 
     async findById(id: string) {

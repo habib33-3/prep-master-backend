@@ -1,61 +1,51 @@
-import { Injectable } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 
-import { PrismaService } from "../prisma/prisma.service";
-import { PaginationQueryDto } from "./dto/pagination.dto";
-
-@Injectable()
 export class PaginationService {
-    constructor(private readonly prisma: PrismaService) {}
-
-    async paginate<T>(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        model: any, // The Prisma model (e.g., `prisma.user`)
-        paginationQuery: PaginationQueryDto,
-        where?: object, // Optional filter conditions
-    ): Promise<{
-        data: T[];
-        total: number;
-        page: number;
-        pageSize: number;
-    }> {
-        const {
-            page = 1,
-            pageSize = 10,
-            sortBy = "createdAt",
-            sortOrder = "asc",
-            search,
-        } = paginationQuery;
-
-        // Calculate skip and take for pagination
+    buildPaginationQuery(filters: { page?: number; pageSize?: number }): {
+        skip: number;
+        take: number;
+    } {
+        const page = filters.page || 1;
+        const pageSize = filters.pageSize || 10;
         const skip = (page - 1) * pageSize;
-        const take = pageSize;
+        return { skip, take: pageSize };
+    }
 
-        // Extend `where` with search functionality if `search` is provided
-        if (search) {
-            where = {
-                ...where,
-                OR: [
-                    { name: { contains: search, mode: "insensitive" } },
-                    { description: { contains: search, mode: "insensitive" } },
-                ],
-            };
-        }
+    buildSortingQuery(filters: {
+        sortBy?: string;
+        sortOrder?: "asc" | "desc";
+    }): Prisma.Enumerable<Prisma.ExerciseOrderByWithRelationInput> {
+        const { sortBy = "createdAt", sortOrder = "asc" } = filters;
+        return [
+            { [sortBy]: sortOrder } as Prisma.ExerciseOrderByWithRelationInput,
+        ];
+    }
 
-        const [data, total] = await this.prisma.$transaction([
-            model.findMany({
-                where,
-                skip,
-                take,
-                orderBy: { [sortBy]: sortOrder },
-            }),
-            model.count({ where }),
-        ]);
+    buildSearchQuery<T>(
+        search: string | undefined,
+        searchableFields: Array<keyof T>,
+    ): Prisma.ExerciseWhereInput[] | undefined {
+        if (!search) return undefined;
+        return searchableFields.map((field) => ({
+            [field]: { contains: search, mode: "insensitive" },
+        }));
+    }
 
-        return {
-            data,
-            total,
-            page,
-            pageSize,
-        };
+    buildFilterQuery(
+        filters: Record<string, unknown>,
+    ): Prisma.Enumerable<Prisma.ExerciseWhereInput> {
+        const where: Prisma.ExerciseWhereInput = {};
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value) {
+                if (Array.isArray(value)) {
+                    where[key] = { hasSome: value };
+                } else if (typeof value === "string") {
+                    where[key] = { contains: value, mode: "insensitive" };
+                } else {
+                    where[key] = value;
+                }
+            }
+        });
+        return where;
     }
 }
