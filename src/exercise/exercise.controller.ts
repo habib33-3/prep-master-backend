@@ -29,9 +29,7 @@ export class ExerciseController {
 
     @Public()
     @Get()
-    async findAll(
-        @Query() filters: ExerciseFilterQueryDto, // Example: filters for Exercise model
-    ) {
+    async findAll(@Query() filters: ExerciseFilterQueryDto) {
         return await this.exerciseService.findAll(filters);
     }
 

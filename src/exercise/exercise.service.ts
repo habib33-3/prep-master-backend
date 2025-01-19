@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 import { Injectable } from "@nestjs/common";
 
 import { CustomLoggerService } from "@/shared/custom-logger/custom-logger.service";
@@ -33,7 +35,7 @@ export class ExerciseService {
         const take = pageSize;
 
         // Build dynamic `where` filter based on model-specific filters
-        const where: any = {};
+        const where: Prisma.ExerciseWhereInput = {};
 
         if (filters) {
             if (filters.level) where.level = filters.level;

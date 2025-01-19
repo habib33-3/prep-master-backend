@@ -61,6 +61,9 @@ export class ExerciseFilterQueryDto extends PaginationQueryDto {
     topic?: string;
 
     @IsOptional()
-    @IsString()
-    categories?: string;
+    @Transform(
+        ({ value }) => (Array.isArray(value) ? value : [value].filter(Boolean)), // Ensure it's an array
+    )
+    @IsString({ each: true })
+    categories?: string[];
 }

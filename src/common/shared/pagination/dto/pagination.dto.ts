@@ -7,14 +7,16 @@ export class PaginationQueryDto {
     search?: string;
 
     @IsOptional()
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    @Transform(({ value }) => parseInt(value, 10))
+    @Transform(({ value }: { value: string | number }) =>
+        parseInt(value as string, 10),
+    )
     @IsInt()
     page: number = 1;
 
     @IsOptional()
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    @Transform(({ value }) => parseInt(value, 10))
+    @Transform(({ value }: { value: string | number }) =>
+        parseInt(value as string, 10),
+    )
     @IsInt()
     pageSize: number = 10;
 
