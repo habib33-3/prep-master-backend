@@ -23,7 +23,12 @@ export class ExerciseService {
 
     async create(createExerciseDto: CreateExerciseDto) {
         const result = await this.prisma.exercise.create({
-            data: createExerciseDto,
+            data: {
+                ...createExerciseDto,
+                creator: {
+                    connect: { email: createExerciseDto.creatorEmail },
+                },
+            },
         });
         this.logService.log(
             "Exercise created successfully",
@@ -41,9 +46,9 @@ export class ExerciseService {
         );
 
         const filterQuery = this.queryBuilder.buildFilterQuery({
-            level: filters.level,
-            topic: filters.topic,
-            categories: filters.categories,
+            level: filters.difficulty,
+            topic: filters.topicName,
+            categories: filters.tagList,
         });
 
         const where: Prisma.ExerciseWhereInput = {
@@ -78,7 +83,11 @@ export class ExerciseService {
         return result;
     }
 
-    async update(updateExerciseDto: UpdateExerciseDto, id: string) {
+    async update(
+        updateExerciseDto: UpdateExerciseDto,
+        id: string,
+        email: string,
+    ) {
         const result = await this.prisma.exercise.update({
             where: { id },
             data: updateExerciseDto,

@@ -4,66 +4,69 @@ import { IsArray, IsEnum, IsOptional, IsString } from "class-validator";
 
 import { PaginationQueryDto } from "@/shared/query-builder/dto/pagination.dto";
 
+// DTO for creating a new Exercise
 export class CreateExerciseDto implements Partial<Exercise> {
     @IsString()
-    creatorEmail: string;
+    questionText: string;
 
     @IsString()
-    title: string;
+    answerText: string;
 
     @IsString()
-    answer: string;
-
-    @IsString()
-    topic: string;
+    topicName: string;
 
     @IsOptional()
     @IsArray()
     @IsString({ each: true })
-    categories?: string[];
+    tagList?: string[];
 
     @IsOptional()
     @IsEnum($Enums.Level)
-    level?: $Enums.Level;
+    difficulty?: $Enums.Level;
+
+    @IsString()
+    creatorEmail: string;
 }
 
+// DTO for updating an existing Exercise
 export class UpdateExerciseDto implements Partial<CreateExerciseDto> {
     @IsOptional()
     @IsString()
-    title?: string;
+    questionText?: string;
 
     @IsOptional()
     @IsString()
-    answer?: string;
+    answerText?: string;
 
     @IsOptional()
     @IsString()
-    topic?: string;
+    topicName?: string;
 
     @IsOptional()
     @IsArray()
     @IsString({ each: true })
-    categories?: string[];
+    tagList?: string[];
 
     @IsOptional()
     @IsEnum($Enums.Level)
-    level?: $Enums.Level;
+    difficulty?: $Enums.Level;
 }
 
+// DTO for filtering exercises with pagination
 export class ExerciseFilterQueryDto extends PaginationQueryDto {
     @IsOptional()
     @Transform(({ value }) => value?.toUpperCase()) // Convert to uppercase
     @IsEnum($Enums.Level)
-    level?: $Enums.Level;
+    difficulty?: $Enums.Level;
 
     @IsOptional()
     @IsString()
-    topic?: string;
+    topicName?: string;
 
     @IsOptional()
-    @Transform(
-        ({ value }) => (Array.isArray(value) ? value : [value].filter(Boolean)), // Ensure it's an array
+    @Transform(({ value }) =>
+        Array.isArray(value) ? value : [value].filter(Boolean),
     )
     @IsString({ each: true })
-    categories?: string[];
+    tagList?: string[];
 }

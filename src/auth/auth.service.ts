@@ -14,14 +14,20 @@ export class AuthService {
         const token = await this.prisma.$transaction(async (prisma) => {
             const user = await prisma.user.findUnique({
                 where: { email },
-                select: { id: true, email: true },
+                select: {
+                    id: true,
+                    email: true,
+                },
             });
 
             if (!user) {
                 throw new NotFoundException("User not found");
             }
 
-            const payload = { sub: user.id, email: user.email };
+            const payload = {
+                sub: user.id,
+                email: user.email,
+            };
 
             return await this.jwtService.signAsync(payload);
         });
