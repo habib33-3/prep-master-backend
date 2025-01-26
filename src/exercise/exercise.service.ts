@@ -57,24 +57,40 @@ export class ExerciseService {
         };
 
         const [data, total] = await this.prisma.$transaction([
-            this.prisma.exercise.findMany({ where, skip, take, orderBy }),
+            this.prisma.exercise.findMany({
+                where,
+                skip,
+                take,
+                orderBy,
+            }),
             this.prisma.exercise.count({ where }),
         ]);
 
-        return { data, total, page: filters.page, pageSize: filters.pageSize };
+        return {
+            data,
+            total,
+
+            page: filters.page,
+            pageSize: filters.pageSize,
+        };
     }
 
     async findById(id: string) {
         const result = await this.prisma.exercise.findUniqueOrThrow({
-            where: { id },
+            where: {
+                id,
+            },
         });
         this.logService.log("Exercise found", JSON.stringify(result));
         return result;
     }
 
-    async delete(id: string) {
+    async delete(id: string, email: string) {
         const result = await this.prisma.exercise.delete({
-            where: { id },
+            where: {
+                id,
+                createdBy: email,
+            },
         });
         this.logService.log(
             "Exercise deleted successfully",
@@ -89,7 +105,10 @@ export class ExerciseService {
         email: string,
     ) {
         const result = await this.prisma.exercise.update({
-            where: { id },
+            where: {
+                id,
+                createdBy: email,
+            },
             data: updateExerciseDto,
         });
         this.logService.log(

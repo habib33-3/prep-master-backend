@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 import {
     Body,
     Controller,
@@ -7,6 +9,7 @@ import {
     Post,
     Put,
     Query,
+    Req,
 } from "@nestjs/common";
 
 import { Public } from "@/decorators/public.decorator";
@@ -40,15 +43,20 @@ export class ExerciseController {
     }
 
     @Delete(":id")
-    async delete(@Param("id") id: string) {
-        return await this.exerciseService.delete(id);
+    async delete(@Param("id") id: string, @Req() req: Request) {
+        return await this.exerciseService.delete(id, req.user.email);
     }
 
     @Put(":id")
     async update(
         @Body() updateExerciseDto: UpdateExerciseDto,
         @Param("id") id: string,
+        @Req() req: Request,
     ) {
-        return await this.exerciseService.update(updateExerciseDto, id);
+        return await this.exerciseService.update(
+            updateExerciseDto,
+            id,
+            req.user.email,
+        );
     }
 }
