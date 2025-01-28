@@ -30,10 +30,12 @@ export default [
         },
         ignorePatterns: [
             ".eslintrc.js",
+            "eslint.config.mjs",
             "dist/**",
             "node_modules/**",
             "**/*.spec.ts",
         ],
+
         rules: {
             // NestJS-specific improvements
             "@typescript-eslint/interface-name-prefix": "off", // Deprecated, unnecessary
