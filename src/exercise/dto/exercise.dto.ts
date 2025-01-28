@@ -25,7 +25,7 @@ export class CreateExerciseDto implements Partial<Exercise> {
     difficulty?: $Enums.Level;
 
     @IsString()
-    creatorEmail: string;
+    createdBy: string;
 }
 
 // DTO for updating an existing Exercise

@@ -25,9 +25,7 @@ export class ExerciseService {
         const result = await this.prisma.exercise.create({
             data: {
                 ...createExerciseDto,
-                creator: {
-                    connect: { email: createExerciseDto.creatorEmail },
-                },
+                createdBy: createExerciseDto.createdBy,
             },
         });
         this.logService.log(
