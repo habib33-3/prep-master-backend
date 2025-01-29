@@ -1,1 +1,5 @@
-export const searchableExerciseFields = ["title", "answer", "topic"];
+export const searchableExerciseFields = [
+    "questionText",
+    "answerText",
+    "topicName",
+];

@@ -21,6 +21,7 @@ export class ExerciseService {
         private readonly queryBuilder: QueryBuilderService,
     ) {}
 
+    // Create exercise
     async create(createExerciseDto: CreateExerciseDto) {
         const result = await this.prisma.exercise.create({
             data: {
@@ -35,14 +36,18 @@ export class ExerciseService {
         return result;
     }
 
+    // Find all exercises with filtering, pagination, and search
     async findAll(filters: ExerciseFilterQueryDto) {
         const { skip, take } = this.queryBuilder.buildPaginationQuery(filters);
         const orderBy = this.queryBuilder.buildSortingQuery(filters);
+
+        // Search query based on searchable fields (questionText, answerText, etc.)
         const searchQuery = this.queryBuilder.buildSearchQuery(
             filters.search,
             searchableExerciseFields,
         );
 
+        // Filter query for level, topic, and categories
         const filterQuery = this.queryBuilder.buildFilterQuery({
             level: filters.difficulty,
             topic: filters.topicName,
@@ -54,6 +59,7 @@ export class ExerciseService {
             ...(searchQuery ? { OR: searchQuery } : {}),
         };
 
+        // Perform the findMany and count query in a transaction for performance
         const [data, total] = await this.prisma.$transaction([
             this.prisma.exercise.findMany({
                 where,
@@ -67,12 +73,12 @@ export class ExerciseService {
         return {
             data,
             total,
-
             page: filters.page,
             pageSize: filters.pageSize,
         };
     }
 
+    // Find exercise by ID
     async findById(id: string) {
         const result = await this.prisma.exercise.findUniqueOrThrow({
             where: {
@@ -83,6 +89,7 @@ export class ExerciseService {
         return result;
     }
 
+    // Delete exercise by ID, only if created by the email
     async delete(id: string, email: string) {
         const result = await this.prisma.exercise.delete({
             where: {
@@ -97,6 +104,7 @@ export class ExerciseService {
         return result;
     }
 
+    // Update exercise by ID, only if created by the email
     async update(
         updateExerciseDto: UpdateExerciseDto,
         id: string,
