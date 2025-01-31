@@ -24,14 +24,26 @@ export class ResponseInterceptor<T> implements NestInterceptor {
         const path = request.url;
 
         return next.handle().pipe(
-            map((data) => ({
-                success: true,
-                statusCode: response.statusCode,
-                message: "Request successful",
-                timestamp,
-                path,
-                data,
-            })),
+            map((result) => {
+                const isPaginated =
+                    result && "data" in result && "meta" in result;
+
+                return {
+                    success: true,
+                    statusCode: response.statusCode,
+                    message: "Request successful",
+                    timestamp,
+                    path,
+                    data: isPaginated
+                        ? {
+                              items: result.data,
+                              meta: result.meta,
+                          }
+                        : {
+                              items: result,
+                          },
+                };
+            }),
         );
     }
 

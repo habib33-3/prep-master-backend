@@ -72,9 +72,11 @@ export class ExerciseService {
 
         return {
             data,
-            total,
-            page: filters.page,
-            pageSize: filters.pageSize,
+            meta: {
+                total,
+                page: filters.page,
+                pageSize: filters.pageSize,
+            },
         };
     }
 
