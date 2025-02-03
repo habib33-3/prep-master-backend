@@ -58,6 +58,13 @@
         "parser": "yaml",
         "tabWidth": 2
       }
+    },
+    {
+      "files": "*.md",
+      "options": {
+        "parser": "markdown",
+        "tabWidth": 2
+      }
     }
   ]
 }

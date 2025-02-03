@@ -6,8 +6,8 @@ export class QueryBuilderService {
         skip: number;
         take: number;
     } {
-        const page = filters.page || 1;
-        const pageSize = filters.pageSize || 10;
+        const page = Math.max(filters.page ?? 1, 1);
+        const pageSize = Math.max(filters.pageSize ?? 10, 1);
         const skip = (page - 1) * pageSize;
         return { skip, take: pageSize };
     }

@@ -34,6 +34,7 @@ export default [
             "dist/**",
             "node_modules/**",
             "**/*.spec.ts",
+            "*.md",
         ],
 
         rules: {

@@ -25,11 +25,6 @@ import { ExerciseService } from "./exercise.service";
 export class ExerciseController {
     constructor(private readonly exerciseService: ExerciseService) {}
 
-    @Post()
-    async create(@Body() createExerciseDto: CreateExerciseDto) {
-        return await this.exerciseService.create(createExerciseDto);
-    }
-
     @Public()
     @Get()
     async findAll(@Query() filters: ExerciseFilterQueryDto) {
@@ -42,9 +37,9 @@ export class ExerciseController {
         return await this.exerciseService.findById(id);
     }
 
-    @Delete(":id")
-    async delete(@Param("id") id: string, @Req() req: Request) {
-        return await this.exerciseService.delete(id, req.user.email);
+    @Post()
+    async create(@Body() createExerciseDto: CreateExerciseDto) {
+        return await this.exerciseService.create(createExerciseDto);
     }
 
     @Put(":id")
@@ -58,5 +53,10 @@ export class ExerciseController {
             id,
             req.user.email,
         );
+    }
+
+    @Delete(":id")
+    async delete(@Param("id") id: string, @Req() req: Request) {
+        return await this.exerciseService.delete(id, req.user.email);
     }
 }
