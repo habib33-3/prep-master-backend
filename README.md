@@ -1,80 +1,157 @@
-## **Backend Setup for PrepMaster**
+---
+
+# PrepMaster
+
+## **Overview**
+
+This project is a full-stack web application built with **Next.js**, **ShadCN**, **Firebase** for the frontend, and **NestJS** with **Prisma** for the backend. The app is designed to provide users with interactive and dynamic content, including exercises, solutions, and user management functionalities.
+
+### **Frontend:**
+
+- **Next.js**: A React-based framework for building modern, server-side-rendered web applications.
+- **ShadCN**: A component library providing UI components that follow best practices for building scalable and maintainable frontend.
+- **Firebase**: Provides authentication, real-time database services, and cloud storage for managing user data and other app-related assets.
+
+### **Backend:**
+
+- **NestJS**: A progressive Node.js framework for building efficient, reliable, and scalable server-side applications.
+- **Prisma**: An ORM used with NestJS to interact with the database, allowing easy querying, migrations, and data management.
 
 ---
 
-### **Overview**
+## **Features**
 
-The backend of the PrepMaster project is built using **NestJS** with **Prisma** to manage interactions with the **PostgreSQL** database. It handles the user authentication, exercise data management, and exposes API endpoints for the frontend to retrieve and interact with the data.
+### **Frontend Features:**
 
----
+- **Exercise Cards**:
 
-### **Installation & Setup**
+  - Displays exercises in a card format with the topic and question text.
+  - Interactive cards allow users to view answers by clicking a button.
 
-#### **1. Clone the Repository:**
+- **Modals for Answer Viewing**:
 
-First, clone the backend repository:
+  - Each exercise card has an associated modal that pops up when the user clicks "View Answer."
+  - Displays both the question and its answer with a section for tags (topics related to the exercise).
+  - Modals are visually appealing with smooth animations and centered content.
 
-```bash
-git clone https://github.com/habib33-3/prep-master-backend
-cd prep-master-backend
-```
+- **Pagination**:
 
-#### **2. Install Dependencies:**
+  - A pagination system allows users to navigate through multiple pages of exercises, improving the user experience for large datasets.
+  - The page number is updated dynamically via URL search parameters.
 
-Run the following command to install the required dependencies:
+- **User Authentication**:
 
-```bash
-npm install
-```
+  - Firebase Authentication is used for managing user sign-ups and log-ins.
+  - Secure login process with email/password and third-party authentication providers like Google.
 
-#### **3. Run Database Migrations:**
+- **Responsive UI**:
+  - The application is fully responsive, adapting to different screen sizes with flexible layouts and components that adjust their size and position.
 
-Before starting the server, you'll need to run the Prisma migrations to set up your PostgreSQL database schema.
+### **Backend Features:**
 
-```bash
-npx prisma migrate dev
-```
+- **User Management**:
 
-This will apply all the database migrations and create the necessary tables for user and exercise data.
+  - NestJS handles user management, ensuring proper authentication and authorization.
+  - Data is securely stored in Firebase for authentication and user data.
 
-#### **4. Start the Development Server:**
+- **Exercise Management**:
 
-Now, start the backend server:
+  - The backend provides CRUD operations for managing exercises (questions, answers, and associated tags).
+  - Prisma interacts with the database to ensure seamless data management and querying.
 
-```bash
-npm run start:dev
-```
+- **API Endpoints**:
 
-The server will run on `http://localhost:5000`.
+  - Exposed API endpoints for retrieving exercises, including pagination, filtering, and searching.
+  - The backend handles requests to fetch exercises, update existing exercises, and retrieve answers for specific exercises.
 
----
-
----
-
-### **Tech Stack for Backend**
-
-- **NestJS**: Framework for building efficient, scalable server-side applications.
-- **Prisma**: ORM for interacting with the PostgreSQL database.
-- **PostgreSQL**: Relational database for storing exercise and user data.
-- **Firebase Authentication**: Provides secure user sign-ups and logins.
-- **JWT (JSON Web Tokens)**: For secure authentication between the frontend and backend.
+- **Database**:
+  - Prisma is used to manage the database schema and interact with the database.
+  - The backend is connected to a PostgreSQL database via Prisma for storing exercise data and user details.
 
 ---
 
-### **Usage**
+## **Tech Stack**
 
-#### **User Authentication**
+### **Frontend:**
 
-- Users can sign up or log in using Firebase Authentication.
-- JWT is used to authorize the user for accessing specific backend resources after they log in.
+- **Next.js** (React framework for server-side rendering)
+- **ShadCN** (UI component library)
+- **Firebase** (Authentication and real-time database)
 
-#### **Exercise Data Management**
+### **Backend:**
 
-- The backend manages exercise data including the topic, question, answer, and tags.
-- Users can interact with the exercises through the frontend by adding, updating, or deleting exercises, depending on their role.
-
-#### **Pagination**
-
-- The API supports pagination for fetching exercises to handle large datasets efficiently. The frontend will dynamically update the page number in the URL, and the backend will return the appropriate slice of exercise data based on the pagination parameters.
+- **NestJS** (Progressive Node.js framework)
+- **Prisma** (ORM for database interactions)
+- **PostgreSQL** (Relational database)
 
 ---
+
+## **Installation & Setup**
+
+### **Frontend Setup**
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/habib33-3/prep-master-frontend
+   cd prep-master-frontend
+   ```
+
+2. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+3. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+   Your app should now be running on `http://localhost:3000`.
+
+---
+
+## **Backend Setup**
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/habib33-3/prep-master-backend
+   cd prep-master-backend
+   ```
+
+2. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**: Ensure you have the correct environment variables set in your `.env` file, including your Firebase and PostgreSQL configuration.
+
+4. **Run the backend server**:
+   ```bash
+   npm run start:dev
+   ```
+   Your backend should now be running on `http://localhost:4000`.
+
+---
+
+## **Usage**
+
+1. **User Authentication**:
+
+   - Users can sign up or log in via Firebase Authentication.
+   - Once logged in, users can interact with exercise cards, view answers, and navigate through paginated exercise lists.
+
+2. **Exercise Cards**:
+
+   - Exercises are displayed in cards with topics, question text, and a "View Answer" button.
+   - Clicking the "View Answer" button opens a modal that displays both the question and answer, along with associated tags.
+
+3. **Pagination**:
+   - Exercises are paginated to improve navigation through large datasets.
+   - Pagination is handled by search parameters in the URL, and the page number is updated automatically.
+
+---
+
+Feel free to check out both the frontend and backend repositories to start working on the application!
