@@ -1,7 +1,8 @@
 import * as cookieParser from "cookie-parser";
+import "module-alias/register";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ValidationPipe } from "@nestjs/common";
+import { RequestMethod, ValidationPipe } from "@nestjs/common";
 import { HttpAdapterHost, NestFactory } from "@nestjs/core";
 
 import env from "@/config/env.config";
@@ -26,7 +27,9 @@ async function bootstrap() {
     app.use(cookieParser());
 
     // Set global prefix for the API
-    app.setGlobalPrefix("api/v1");
+    app.setGlobalPrefix("api/v1", {
+        exclude: [{ method: RequestMethod.GET, path: "/" }],
+    });
 
     // Enable shutdown hooks for graceful shutdown
     app.enableShutdownHooks();

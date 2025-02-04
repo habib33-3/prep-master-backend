@@ -9,8 +9,8 @@ export class AppService implements OnApplicationShutdown {
         private readonly prismaService: PrismaService,
         private readonly logService: CustomLoggerService,
     ) {}
-    getHello(): string {
-        return "Hello World!";
+    getHello(): { message: string } {
+        return { message: "Hello World!" };
     }
 
     async onApplicationShutdown() {
