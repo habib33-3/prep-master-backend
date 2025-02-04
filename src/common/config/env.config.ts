@@ -13,9 +13,10 @@ const envSchema = z.object({
     PORT: z.string().transform((val) => Number(val)),
     JWT_SECRET: z.string(),
     JWT_EXPIRES_IN: z.string(),
-    ALLOWED_ORIGINS: z
-        .string()
-        .transform((val) => val.split(",").map((origin) => origin.trim())),
+    ALLOWED_ORIGINS: z.string().transform(
+        (val) =>
+            val.split(",").map((origin) => origin.trim().replace(/\/$/, "")), // Trim and remove trailing slashes
+    ),
 });
 
 // Parse and validate the environment variables
