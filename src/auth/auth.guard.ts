@@ -15,11 +15,14 @@ import { ACCESS_TOKEN } from "@/constants/auth.constants";
 
 import { IS_PUBLIC_KEY } from "@/decorators/public.decorator";
 
+import { CustomLoggerService } from "@/shared/custom-logger/custom-logger.service";
+
 @Injectable()
 export class AuthGuard implements CanActivate {
     constructor(
         private readonly jwtService: JwtService,
         private readonly reflector: Reflector,
+        private readonly logger: CustomLoggerService,
     ) {}
 
     async canActivate(context: ExecutionContext) {
