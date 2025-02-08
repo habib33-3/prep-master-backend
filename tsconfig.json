@@ -31,6 +31,6 @@
     "noFallthroughCasesInSwitch": false,
     "typeRoots": ["node_modules/@types", "src/common/types"]
   },
-  "include": ["src/**/*", "test/**/*"],
+  "include": ["src/**/*", "test/**/*", "prisma/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
