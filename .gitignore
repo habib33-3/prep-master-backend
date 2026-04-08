@@ -56,4 +56,4 @@ pnpm-lock.yaml
 bun.lockb
 package-lock.json
 .vercel
-config.bat
+.env
